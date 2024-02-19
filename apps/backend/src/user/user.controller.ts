@@ -23,6 +23,11 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
+  @Get('roster')
+  async getRoster() {
+      return this.userService.findUserStats();
+  }
+
   @UsePipes(new ValidationPipe())
   @Post('users')
   async create(@Body('user') userData: CreateUserDto) {

@@ -12,6 +12,10 @@ import { UserRepository } from './user.repository';
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository, private readonly em: EntityManager) {}
+  
+  async findUserStats() {
+    return this.userRepository.findUserStats();
+  }
 
   async findAll(): Promise<User[]> {
     return this.userRepository.findAll();

@@ -4,6 +4,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/mysql';
 
 import { User } from '../user/user.entity';
+import { Tag } from '../tag/tag.entity';
 import { Article } from './article.entity';
 import { IArticleRO, IArticlesRO, ICommentsRO } from './article.interface';
 import { Comment } from './comment.entity';
@@ -154,8 +155,20 @@ export class ArticleService {
       { populate: ['followers', 'favorites', 'articles'] },
     );
     const article = new Article(user!, dto.title, dto.description, dto.body);
-    article.tagList.push(...dto.tagList);
     user?.articles.add(article);
+
+    for (const tagName of dto.tagList) {
+      let tag = await this.em.findOne(Tag, { tag: tagName });
+      if (!tag) {
+        // Create a new tag entity if it doesn't exist
+        tag = new Tag();
+        tag.tag = tagName;
+        await this.em.persist(tag);
+      }
+      // Add the tag's string value to the article's tagList
+      article.tagList.push(tagName);
+    }
+
     await this.em.flush();
 
     return { article: article.toJSON(user!) };

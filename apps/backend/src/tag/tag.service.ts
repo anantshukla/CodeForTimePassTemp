@@ -13,6 +13,7 @@ export class TagService {
 
   async findAll(): Promise<ITagsRO> {
     const tags = await this.tagRepository.findAll();
-    return { tags: tags.map((tag) => tag.tag) };
+    return { tags: tags.map((tag) => tag.tag) }; // Return array of tag strings
   }
+  
 }
